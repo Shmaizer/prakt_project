@@ -51,16 +51,43 @@ namespace prakt_project.window
             {
                 //string путьКДокументу = ПолучитьПутьКДокументу("pattern_Docx", "Справка.docx");
                 //System.Windows.MessageBox.Show(путьКДокументу);
-                string[] first = new string[] { "Good" };
-                string[] last = new string[] { "Good1" };
+                string[] first = new string[] { "fio","day","mouth","age","date" };
+                string[] last = new string[] { student.ФИО,DateTime.Now.Day.ToString(), ПолучитьНазваниеМесяца(DateTime.Now.Month), DateTime.Now.Year.ToString(), DateTime.Now.Day.ToString()+"."+DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString(), };
                 T2CardGen nn = new T2CardGen();
                 nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_Справка" +".docx", first, last) ;
+                ChildWindowClosed?.Invoke(this, EventArgs.Empty);
+                Close();
             }
             if(comboBoxDocx.SelectedIndex==1)
             {
-
+                string[] first = new string[] { "fio", "class", "date" };
+                string[] last = new string[] { student.ФИО, student.Класс, DateTime.Parse(student.ДатаРождения).Day+"."+ DateTime.Parse(student.ДатаРождения).Month + "." + DateTime.Parse(student.ДатаРождения).Year };
+                T2CardGen nn = new T2CardGen();
+                nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА_подтверждение.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_СПРАВКА_подтверждение" + ".docx", first, last);
+                ChildWindowClosed?.Invoke(this, EventArgs.Empty);
+                Close();
             }
         }
+
+        static string ПолучитьНазваниеМесяца(int номерМесяца)
+        {
+            if (номерМесяца >= 1 && номерМесяца <= 12)
+            {
+                CultureInfo культураРусская = new CultureInfo("ru-RU");
+                DateTimeFormatInfo информацияОВремени = культураРусская.DateTimeFormat;
+                string названиеМесяца = информацияОВремени.GetMonthName(номерМесяца);
+                return названиеМесяца;
+            }
+            else
+            {
+                return "Некорректный номер месяца";
+            }
+        }
+
+
+
+
+
         static string ПолучитьПутьКДокументу(string папка, string имяФайла)
         {
             string путьКПапкеДокументов = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, папка);

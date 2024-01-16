@@ -37,6 +37,7 @@ namespace prakt_project
             public string Класс { get; set; }
             public int Класс_ID { get; set; }
             public string датаСправки { get; set; }
+            public string ДатаРождения { get; set; }
         }
         private ObservableCollection<Student> students;
         public MainWindow()
@@ -106,6 +107,7 @@ namespace prakt_project
                                 Класс = reader["Класс"].ToString(),
                                 Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
                                 Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
+                                ДатаРождения = reader["ДатаРождения"].ToString(),
                                 датаСправки = (reader["ДатаСправки"] != DBNull.Value) ?
                       (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
                       (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
