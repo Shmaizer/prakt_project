@@ -42,8 +42,6 @@ namespace prakt_project.window
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-
-                    // Проверяем наличие справки для ученика
                     string checkQuery = "SELECT Документ_ID FROM tbl_Docx WHERE Ученик_ID = @Ученик_ID";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
                     checkCommand.Parameters.AddWithValue("@Ученик_ID", student.Ученик_ID);
@@ -52,7 +50,6 @@ namespace prakt_project.window
 
                     if (docId == null)
                     {
-                        // Если справки нет, создаем новую
                         string insertQuery = "INSERT INTO tbl_Docx (ДатаСправки, Ученик_ID) VALUES (@ДатаСправки, @Ученик_ID)";
                         SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
                         insertCommand.Parameters.AddWithValue("@ДатаСправки", dataPickerDocx.SelectedDate);
@@ -72,7 +69,6 @@ namespace prakt_project.window
                     }
                     else
                     {
-                        // Если справка уже существует, обновляем ее
                         string updateQuery = "UPDATE tbl_Docx SET ДатаСправки = @ДатаСправки WHERE Ученик_ID = @Ученик_ID";
                         SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
                         updateCommand.Parameters.AddWithValue("@ДатаСправки", dataPickerDocx.SelectedDate);

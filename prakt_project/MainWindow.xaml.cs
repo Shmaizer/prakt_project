@@ -156,10 +156,22 @@ namespace prakt_project
         }
         private void printDockToStudentButton(object sender, RoutedEventArgs e)
         {
-            string[] mass = new string[] { "Good" };
-            string[] mass2 = new string[] { "Good1" };
-            T2CardGen nn = new T2CardGen();
-            nn.genDock("E:\\еуые\\1.docx", "E:\\еуые\\1\\1.docx", mass, mass2);
+            //string[] mass = new string[] { "Good" };
+            //string[] mass2 = new string[] { "Good1" };
+            //T2CardGen nn = new T2CardGen();
+            //nn.genDock("E:\\еуые\\1.docx", "E:\\еуые\\1\\1.docx", mass, mass2);
+            Button button = sender as Button;
+            if (button != null && button.DataContext is Student)
+            {
+                Student selectedStudent = button.DataContext as Student;
+                window.docxGen childWindow = new window.docxGen(selectedStudent);
+                childWindow.ChildWindowClosed += ChildWindowClosedHandler;
+                childWindow.ShowDialog();
+            }
+
+
+
+
         }
         private void updateDocxSpravka_Window(object sender, RoutedEventArgs e)
         {
