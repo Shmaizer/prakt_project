@@ -151,7 +151,7 @@ namespace prakt_project.window
         private void Button_Click_Close(object sender, RoutedEventArgs e)
         {
             ChildWindowClosed?.Invoke(this, EventArgs.Empty);
-            Close();
+            this.Hide();
         }
 
 

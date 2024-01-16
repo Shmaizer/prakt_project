@@ -70,6 +70,12 @@
     <Compile Include="window\changeStudentWindow.xaml.cs">
       <DependentUpon>changeStudentWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="window\createStudent.xaml.cs">
+      <DependentUpon>createStudent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="window\updateWindowDocx.xaml.cs">
+      <DependentUpon>updateWindowDocx.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,6 +93,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="window\changeStudentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="window\createStudent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="window\updateWindowDocx.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

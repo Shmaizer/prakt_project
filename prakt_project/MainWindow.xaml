@@ -35,7 +35,7 @@
                   FontSize="15" SelectionChanged="dataGridMain_SelectionChanged"
                   >
             <DataGrid.Columns>
-                
+
                 <DataGridTextColumn Header="ФИО" Binding="{Binding ФИО}" />
                 <DataGridTextColumn Header="Класс" Binding="{Binding Класс}" />
                 <DataGridTextColumn  Header="Справка до" Binding="{Binding датаСправки, StringFormat={}{0:dd.MM.yyyy}}" />
@@ -57,7 +57,7 @@
                             <Button Content="Редактировать" Click="editStudentInfoButton"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    
+
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Документы">
                     <DataGridTemplateColumn.CellTemplate>
@@ -76,11 +76,12 @@
                 </Style>
             </DataGrid.RowStyle>
 
-            
+
         </DataGrid>
         <ComboBox SelectedIndex="0" Name="comboBoxClasses" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Button Content="Добавить" HorizontalAlignment="Left" Margin="135,23,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click"/>
     </Grid>
 
-    
+
 </Window>
     

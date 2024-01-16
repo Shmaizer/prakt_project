@@ -106,8 +106,11 @@ namespace prakt_project
                                 Класс = reader["Класс"].ToString(),
                                 Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
                                 Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
-                                датаСправки = (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() +"." + (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() +"."+ (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString()
-
+                                датаСправки = (reader["ДатаСправки"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString() :
+                      "отсутствует"
                             });
                         }
                     }
@@ -121,7 +124,7 @@ namespace prakt_project
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при загрузке данных [selectStudent_catch_1]: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }
@@ -129,6 +132,7 @@ namespace prakt_project
         private void ChildWindowClosedHandler(object sender, EventArgs e)
         {
             selectClassesToChangeComboBox();
+            colorCell();
         }
         private void editStudentInfoButton(object sender, RoutedEventArgs e)
         {
@@ -144,6 +148,12 @@ namespace prakt_project
             }
 
         }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            window.createStudent childWindow = new window.createStudent();
+            childWindow.ChildWindowClosed += ChildWindowClosedHandler;
+            childWindow.ShowDialog();
+        }
         private void printDockToStudentButton(object sender, RoutedEventArgs e)
         {
             string[] mass = new string[] { "Good" };
@@ -153,7 +163,14 @@ namespace prakt_project
         }
         private void updateDocxSpravka_Window(object sender, RoutedEventArgs e)
         {
-            
+            Button button = sender as Button;
+            if (button != null && button.DataContext is Student)
+            {
+                Student selectedStudent = button.DataContext as Student;
+                window.updateWindowDocx childWindow = new window.updateWindowDocx(selectedStudent);
+                childWindow.ChildWindowClosed += ChildWindowClosedHandler;
+                childWindow.ShowDialog();
+            }
         }
 
         private void dataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -171,29 +188,44 @@ namespace prakt_project
         {
             foreach (var item in dataGridMain.Items)
             {
-                var row = (DataGridRow)dataGridMain.ItemContainerGenerator.ContainerFromItem(item);
-
+                var ученик1 = (Student)item;
                 int columnIndex = dataGridMain.Columns.IndexOf(dataGridMain.Columns.First(c => c.Header.ToString() == "Справка до"));
 
-                if (row != null && columnIndex >= 0)
+                if (columnIndex >= 0 && ученик1.датаСправки != "отсутствует")
                 {
-                    var cellContent = dataGridMain.Columns[columnIndex].GetCellContent(row);
-                    if (cellContent != null)
+                    var row = (DataGridRow)dataGridMain.ItemContainerGenerator.ContainerFromItem(item);
+
+                    if (row == null)
                     {
-                        var ячейка = (TextBlock)cellContent;
-                        var ученик = (Student)item; 
-                        if (ученик != null && DateTime.Parse(ученик.датаСправки) < DateTime.Now)
+                        dataGridMain.UpdateLayout();
+                        dataGridMain.ScrollIntoView(item);
+                        row = (DataGridRow)dataGridMain.ItemContainerGenerator.ContainerFromItem(item);
+                    }
+
+                    if (row != null)
+                    {
+                        var cellContent = dataGridMain.Columns[columnIndex].GetCellContent(row);
+                        if (cellContent != null)
                         {
-                            ячейка.Background = new SolidColorBrush(Colors.Red);
-                        }
-                        else
-                        {
-                            ячейка.Background = new SolidColorBrush(Colors.Green);
+                            var ячейка = (TextBlock)cellContent;
+                            var ученик = (Student)item;
+                            if (ученик != null && DateTime.Parse(ученик.датаСправки) < DateTime.Now)
+                            {
+                                ячейка.Foreground = new SolidColorBrush(Colors.Red);
+                            }
+                            else
+                            {
+                                ячейка.Foreground = new SolidColorBrush(Colors.Green);
+                            }
                         }
                     }
                 }
             }
         }
+
+
+
+        
 
     }
 }
