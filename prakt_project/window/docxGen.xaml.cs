@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+
 namespace prakt_project.window
 {
     /// <summary>
@@ -19,7 +22,7 @@ namespace prakt_project.window
             InitializeComponent();
             student = selectedStudent;
             textBoxFIO.Text = student.ФИО;
-
+            textBoxFIO.TextChanged += TextBox_TextChanged;
 
 
         }
@@ -84,15 +87,13 @@ namespace prakt_project.window
             }
         }
 
-
-
-
-
-        static string ПолучитьПутьКДокументу(string папка, string имяФайла)
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string путьКПапкеДокументов = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, папка);
-            string полныйПуть = Path.Combine(путьКПапкеДокументов, имяФайла);
-            return полныйПуть;
+            bool isValidInput = textBoxFIO.Text.All(c => char.IsLetter(c) || c == ' ');
+            buttonOK.IsEnabled = isValidInput &&
+                                 !string.IsNullOrWhiteSpace(textBoxFIO.Text);
+            textBoxFIO.Background = textBoxFIO.Text.All(c => char.IsLetter(c) || c == ' ') ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
         }
+
     }
 }

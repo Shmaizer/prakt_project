@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data.SqlClient;
-using System.Collections.ObjectModel;
-
-
-
+using System.Globalization;
+using System.Windows.Controls;
+using System.Windows.Forms;
 namespace prakt_project.window
 {
     /// <summary>
@@ -35,7 +25,9 @@ namespace prakt_project.window
             student = selectedStudent;
             selectAllClassToComboBox();
             selectActualClassInfo(selectedStudent);
-
+            фамилияTextBox.TextChanged += TextBox_TextChanged;
+            имяTextBox.TextChanged += TextBox_TextChanged;
+            отчествоTextBox.TextChanged += TextBox_TextChanged;
 
         }
 
@@ -62,7 +54,7 @@ namespace prakt_project.window
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.Forms.MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
             }
         }
         private void selectActualClassInfo(MainWindow.Student selectedStudent)
@@ -92,7 +84,7 @@ namespace prakt_project.window
                         }
                         else
                         {
-                            MessageBox.Show("Данные не найдены", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            System.Windows.Forms.MessageBox.Show("Данные не найдены", "Предупреждение", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Warning);
                             this.Hide();
                         }
                     }
@@ -120,24 +112,24 @@ namespace prakt_project.window
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
-                            MessageBox.Show("Запись успешно обновлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                            System.Windows.Forms.MessageBox.Show("Запись успешно обновлена", "Успех", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Information);
                             
                         }
                         else
                         {
-                            MessageBox.Show("Не удалось обновить запись", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            System.Windows.Forms.MessageBox.Show("Не удалось обновить запись", "Ошибка", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
                            
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.Forms.MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.Forms.MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
             }
             ChildWindowClosed?.Invoke(this, EventArgs.Empty);
             this.Hide();
@@ -154,8 +146,24 @@ namespace prakt_project.window
             this.Hide();
         }
 
+        private void фамилияTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            
+        }
 
-
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool isValidInput = фамилияTextBox.Text.All(char.IsLetter) &&
+                                имяTextBox.Text.All(char.IsLetter) &&
+                                отчествоTextBox.Text.All(char.IsLetter);
+            buttonOK.IsEnabled = isValidInput &&
+                                 !string.IsNullOrWhiteSpace(фамилияTextBox.Text) &&
+                                 !string.IsNullOrWhiteSpace(имяTextBox.Text) &&
+                                 !string.IsNullOrWhiteSpace(отчествоTextBox.Text);
+            фамилияTextBox.Background = фамилияTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+            имяTextBox.Background = имяTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+            отчествоTextBox.Background = отчествоTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+        }
     }
 
 }

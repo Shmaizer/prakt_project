@@ -11,6 +11,7 @@ using Microsoft.Office.Interop.Word;
 using Document = Microsoft.Office.Interop.Word.Document;
 using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+using System.Windows;
 namespace prakt_project
 {
     class T2CardGen
@@ -23,17 +24,24 @@ namespace prakt_project
 
         static void ReplaceTextInWordDocument(string documentPath, string newDocumentPath, string[] findText, string[] replaceText)
         {
-            File.Copy(documentPath, newDocumentPath, true);
-
-            using (WordprocessingDocument newDoc = WordprocessingDocument.Open(newDocumentPath, true))
+            try
             {
-                var body = newDoc.MainDocumentPart.Document.Body;
-                for (int i = 0; i < findText.Length; i++)
+                File.Copy(documentPath, newDocumentPath, true);
+
+                using (WordprocessingDocument newDoc = WordprocessingDocument.Open(newDocumentPath, true))
                 {
-                    ReplaceTextInElements(body, findText[i], replaceText[i]);
+                    var body = newDoc.MainDocumentPart.Document.Body;
+                    for (int i = 0; i < findText.Length; i++)
+                    {
+                        ReplaceTextInElements(body, findText[i], replaceText[i]);
+                    }
+                    newDoc.MainDocumentPart.Document.Save();
+
                 }
-                newDoc.MainDocumentPart.Document.Save();
-                
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 

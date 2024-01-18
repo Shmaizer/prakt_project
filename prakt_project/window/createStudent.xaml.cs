@@ -25,6 +25,9 @@ namespace prakt_project.window
         {
             InitializeComponent();
             selectAllClassesToComboBox();
+            фамилияTextBox.TextChanged += TextBox_TextChanged;
+            имяTextBox.TextChanged += TextBox_TextChanged;
+            отчествоTextBox.TextChanged += TextBox_TextChanged;
         }
         public event EventHandler ChildWindowClosed;
 
@@ -120,6 +123,20 @@ namespace prakt_project.window
         private void comboBoxClasses_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool isValidInput = фамилияTextBox.Text.All(char.IsLetter) &&
+                                имяTextBox.Text.All(char.IsLetter) &&
+                                отчествоTextBox.Text.All(char.IsLetter);
+            buttonOK.IsEnabled = isValidInput &&
+                                 !string.IsNullOrWhiteSpace(фамилияTextBox.Text) &&
+                                 !string.IsNullOrWhiteSpace(имяTextBox.Text) &&
+                                 !string.IsNullOrWhiteSpace(отчествоTextBox.Text);
+            фамилияTextBox.Background = фамилияTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+            имяTextBox.Background = имяTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+            отчествоTextBox.Background = отчествоTextBox.Text.All(char.IsLetter) ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
         }
     }
 }

@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DateComparisonConverter.cs" />
+    <Compile Include="IsTextInvalidConverter .cs" />
     <Compile Include="T2CardGen.cs" />
     <Compile Include="window\changeStudentWindow.xaml.cs">
       <DependentUpon>changeStudentWindow.xaml</DependentUpon>
