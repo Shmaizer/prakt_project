@@ -14,18 +14,11 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Menu Background="DeepSkyBlue" HorizontalAlignment="Stretch" VerticalAlignment="Top"  >
-            <MenuItem Header="File">
-                <MenuItem Header="Open" />
-                <MenuItem Header="Save" />
-                <MenuItem Header="Exit" />
-            </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Cut" />
-                <MenuItem Header="Copy" />
-                <MenuItem Header="Paste" />
-            </MenuItem>
+        <Menu Background="DeepSkyBlue" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="40"  >
+
         </Menu>
+        <Button Content="Добавить" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click"/>
+
         <DataGrid Margin="10,45,10,10" x:Name="dataGridMain" HeadersVisibility="Column"
                   BorderThickness="0"
                   GridLinesVisibility="Horizontal"
@@ -78,8 +71,8 @@
 
 
         </DataGrid>
-        <ComboBox SelectedIndex="0" Name="comboBoxClasses" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
-        <Button Content="Добавить" HorizontalAlignment="Left" Margin="135,23,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click"/>
+        <ComboBox SelectedIndex="0" Name="comboBoxClasses" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Button Content="Отчет" HorizontalAlignment="Left" Margin="236,10,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click_1" />
     </Grid>
 
 

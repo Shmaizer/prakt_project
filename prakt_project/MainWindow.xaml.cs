@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Media.Animation;
 using System.Data.SqlClient;
-using System.Data;
 using System.Collections.ObjectModel;
-using System.Globalization;
+using System.IO;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
+using Button = System.Windows.Controls.Button;
+using OfficeOpenXml;
+
 namespace prakt_project
 {
     /// <summary>
@@ -237,9 +231,96 @@ namespace prakt_project
             }
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            students = new ObservableCollection<Student>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string selectedClass = comboBoxClasses.SelectedItem.ToString();
+                    string query = $"SELECT * FROM УченикИнформация WHERE Класс = N'{selectedClass}'";
+                    SqlCommand command = new SqlCommand(query, connection);
 
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            students.Add(new Student
+                            {
+                                ФИО = reader["Фамилия"].ToString() + " " + reader["Имя"].ToString() + " " + reader["Отчество"].ToString(),
+                                Фамилия = reader["Фамилия"].ToString(),
+                                Имя = reader["Имя"].ToString(),
+                                Отчество = reader["Отчество"].ToString(),
+                                Класс = reader["Класс"].ToString(),
+                                Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
+                                Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
+                                ДатаРождения = reader["ДатаРождения"].ToString(),
+                                датаСправки = (reader["ДатаСправки"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString() :
+                      "отсутствует"
+                            });
+                        }
+                    }
+                }
+                СоздатьExcelОтчет(students);
 
-        
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных [selectStudent_catch_1]: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void СоздатьExcelОтчет(ObservableCollection<Student> данные)
+        {
+            try
+            {
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Excel файл (*.xlsx)|*.xlsx";
+                    saveFileDialog.Title = "Сохранить отчет в Excel";
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        FileInfo файлExcel = new FileInfo(saveFileDialog.FileName);
 
+                        using (ExcelPackage пакет = new ExcelPackage(файлExcel))
+                        {
+                            ExcelWorksheet существующийЛист = пакет.Workbook.Worksheets.FirstOrDefault(sheet => sheet.Name == "Отчет");
+                            if (существующийЛист != null)
+                            {
+                                пакет.Workbook.Worksheets.Delete(существующийЛист);
+                            }
+                            ExcelWorksheet лист = пакет.Workbook.Worksheets.Add("Отчет");
+                            лист.Cells[1, 1].Value = "Фамилия";
+                            лист.Cells[1, 2].Value = "Имя";
+                            лист.Cells[1, 3].Value = "Отчество";
+                            лист.Cells[1, 4].Value = "Класс";
+                            лист.Cells[1, 5].Value = "Справка до..";
+                            for (int i = 0; i < данные.Count; i++)
+                            {
+                                лист.Cells[1 + i + 1, 1].Value = данные[i].Фамилия;
+                                лист.Cells[1 + i + 1, 2].Value = данные[i].Имя;
+                                лист.Cells[1 + i + 1, 3].Value = данные[i].Отчество;
+                                лист.Cells[1 + i + 1, 4].Value = данные[i].Класс;
+                                лист.Cells[1 + i + 1, 5].Value = данные[i].датаСправки;
+                            }
+
+                            // Сохраняем пакет
+                            пакет.Save();
+                        }
+
+                        Console.WriteLine($"Отчет успешно сохранен в {saveFileDialog.FileName}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при создании отчета: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
