@@ -31,7 +31,8 @@
 
                 <DataGridTextColumn Header="ФИО" Binding="{Binding ФИО}" />
                 <DataGridTextColumn Header="Класс" Binding="{Binding Класс}" />
-                <DataGridTextColumn  Header="Справка до" Binding="{Binding датаСправки, StringFormat={}{0:dd.MM.yyyy}}" />
+                <DataGridTextColumn  Header="Дата Выдачи Справки" Binding="{Binding ДатаВыдачи, StringFormat={}{0:dd.MM.yyyy}}" />
+                <DataGridTextColumn  Header="Дата Окончания" Binding="{Binding ДатаОкончания, StringFormat={}{0:dd.MM.yyyy}}" />
 
 
 

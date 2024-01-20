@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
-
+using NPetrovich;
 namespace prakt_project.window
 {
     /// <summary>
@@ -54,8 +54,23 @@ namespace prakt_project.window
             {
                 //string путьКДокументу = ПолучитьПутьКДокументу("pattern_Docx", "Справка.docx");
                 //System.Windows.MessageBox.Show(путьКДокументу);
-                string[] first = new string[] { "fio","day","mouth","age","date" };
-                string[] last = new string[] { student.ФИО,DateTime.Now.Day.ToString(), ПолучитьНазваниеМесяца(DateTime.Now.Month), DateTime.Now.Year.ToString(), DateTime.Now.Day.ToString()+"."+DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString(), };
+                var petrovich = new Petrovich()
+                {
+                    FirstName = student.Имя.ToString(),
+                    LastName = student.Фамилия.ToString(),
+                    MiddleName = student.Отчество.ToString(),
+                    AutoDetectGender = true
+                };
+                var inflected = petrovich.InflectTo(Case.Dative);
+                string[] first = new string[] { "fio","day","mouth","age","date", "class" };
+                string[] last = new string[] {
+                    inflected.FirstName+" "+inflected.LastName+" "+inflected.MiddleName,
+                    DateTime.Now.Day.ToString(),
+                    ПолучитьНазваниеМесяца(DateTime.Now.Month), 
+                    
+                    DateTime.Now.Year.ToString(), 
+                    DateTime.Now.Day.ToString()+"."+DateTime.Now.Month.ToString() + "." + DateTime.Now.Year.ToString(),
+                    student.Класс};
                 T2CardGen nn = new T2CardGen();
                 nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_Справка" +".docx", first, last) ;
                 ChildWindowClosed?.Invoke(this, EventArgs.Empty);
@@ -63,8 +78,19 @@ namespace prakt_project.window
             }
             if(comboBoxDocx.SelectedIndex==1)
             {
+                var petrovich = new Petrovich()
+                {
+                    FirstName = student.Имя.ToString(),
+                    LastName = student.Фамилия.ToString(),
+                    MiddleName = student.Отчество.ToString(),
+                    AutoDetectGender = true
+                };
+                
                 string[] first = new string[] { "fio", "class", "date" };
-                string[] last = new string[] { student.ФИО, student.Класс, DateTime.Parse(student.ДатаРождения).Day+"."+ DateTime.Parse(student.ДатаРождения).Month + "." + DateTime.Parse(student.ДатаРождения).Year };
+                string[] last = new string[] {
+                    petrovich.InflectFirstNameTo(Case.Genitive)+" "+petrovich.InflectLastNameTo(Case.Genitive)+" "+petrovich.InflectMiddleNameTo(Case.Genitive),
+                    student.Класс, 
+                    DateTime.Parse(student.ДатаРождения).Day+"."+ DateTime.Parse(student.ДатаРождения).Month + "." + DateTime.Parse(student.ДатаРождения).Year };
                 T2CardGen nn = new T2CardGen();
                 nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА_подтверждение.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_СПРАВКА_подтверждение" + ".docx", first, last);
                 ChildWindowClosed?.Invoke(this, EventArgs.Empty);

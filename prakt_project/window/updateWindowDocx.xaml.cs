@@ -31,7 +31,8 @@ namespace prakt_project.window
         {
             InitializeComponent();
             student = selectedStudent;
-            dataPickerDocx.SelectedDate = (student.датаСправки != "отсутствует") ? DateTime.Parse(student.датаСправки) : DateTime.Now;
+            dataPickerDocxFirst.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаОкончания) : DateTime.Now;
+            dataPickerDockEnd.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаОкончания) : DateTime.Now;
         }
         
 
@@ -50,9 +51,10 @@ namespace prakt_project.window
 
                     if (docId == null)
                     {
-                        string insertQuery = "INSERT INTO tbl_Docx (ДатаСправки, Ученик_ID) VALUES (@ДатаСправки, @Ученик_ID)";
+                        string insertQuery = "INSERT INTO tbl_Docx (ДатаВыдачи, ДатаОкончания,Ученик_ID) VALUES (@ДатаВыдачи,@ДатаОкончания, @Ученик_ID)";
                         SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
-                        insertCommand.Parameters.AddWithValue("@ДатаСправки", dataPickerDocx.SelectedDate);
+                        insertCommand.Parameters.AddWithValue("@ДатаВыдачи", dataPickerDocxFirst.SelectedDate);
+                        insertCommand.Parameters.AddWithValue("@ДатаОкончания", dataPickerDockEnd.SelectedDate);
                         insertCommand.Parameters.AddWithValue("@Ученик_ID", (int)student.Ученик_ID);
 
                         int rowsInserted = insertCommand.ExecuteNonQuery();
@@ -60,6 +62,7 @@ namespace prakt_project.window
                         if (rowsInserted > 0)
                         {
                             MessageBox.Show("Справка успешно создана", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ChildWindowClosed?.Invoke(this, EventArgs.Empty);
                             Close();
                         }
                         else
@@ -69,9 +72,10 @@ namespace prakt_project.window
                     }
                     else
                     {
-                        string updateQuery = "UPDATE tbl_Docx SET ДатаСправки = @ДатаСправки WHERE Ученик_ID = @Ученик_ID";
+                        string updateQuery = "UPDATE tbl_Docx SET ДатаВыдачи = @ДатаВыдачи, ДатаОкончания = @ДатаОкончания WHERE Ученик_ID = @Ученик_ID";
                         SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
-                        updateCommand.Parameters.AddWithValue("@ДатаСправки", dataPickerDocx.SelectedDate);
+                        updateCommand.Parameters.AddWithValue("@ДатаВыдачи", dataPickerDocxFirst.SelectedDate);
+                        updateCommand.Parameters.AddWithValue("@ДатаОкончания", dataPickerDockEnd.SelectedDate);
                         updateCommand.Parameters.AddWithValue("@Ученик_ID", (int)student.Ученик_ID);
 
                         int rowsUpdated = updateCommand.ExecuteNonQuery();
@@ -95,7 +99,15 @@ namespace prakt_project.window
             }
 
         }
-
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            bool isValidInput = dataPickerDocxFirst.SelectedDate.HasValue &&
+                                dataPickerDockEnd.SelectedDate.HasValue &&
+                                dataPickerDocxFirst.SelectedDate <= dataPickerDockEnd.SelectedDate;
+            buttonOK.IsEnabled = isValidInput;
+            dataPickerDocxFirst.Background = isValidInput ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+            dataPickerDockEnd.Background = isValidInput ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.LightCoral;
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             ChildWindowClosed?.Invoke(this, EventArgs.Empty);

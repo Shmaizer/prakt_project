@@ -30,7 +30,8 @@ namespace prakt_project
             public string Отчество { get; set; }
             public string Класс { get; set; }
             public int Класс_ID { get; set; }
-            public string датаСправки { get; set; }
+            public string ДатаОкончания { get; set; }
+            public string ДатаВыдачи { get; set; }
             public string ДатаРождения { get; set; }
         }
         private ObservableCollection<Student> students;
@@ -102,19 +103,24 @@ namespace prakt_project
                                 Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
                                 Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
                                 ДатаРождения = reader["ДатаРождения"].ToString(),
-                                датаСправки = (reader["ДатаСправки"] != DBNull.Value) ?
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString() :
+                                ДатаОкончания = (reader["ДатаОкончания"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Year).ToString() :
+                      "отсутствует",
+                                ДатаВыдачи = (reader["ДатаВыдачи"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Year).ToString() :
                       "отсутствует"
                             });
                         }
                     }
                 }
                 dataGridMain.ItemsSource = students;
+                colorCell();
 
 
-                
 
 
             }
@@ -197,9 +203,9 @@ namespace prakt_project
             foreach (var item in dataGridMain.Items)
             {
                 var ученик1 = (Student)item;
-                int columnIndex = dataGridMain.Columns.IndexOf(dataGridMain.Columns.First(c => c.Header.ToString() == "Справка до"));
+                int columnIndex = dataGridMain.Columns.IndexOf(dataGridMain.Columns.First(c => c.Header.ToString() == "Дата Окончания"));
 
-                if (columnIndex >= 0 && ученик1.датаСправки != "отсутствует")
+                if (columnIndex >= 0 && ученик1.ДатаОкончания != "отсутствует")
                 {
                     var row = (DataGridRow)dataGridMain.ItemContainerGenerator.ContainerFromItem(item);
 
@@ -217,7 +223,7 @@ namespace prakt_project
                         {
                             var ячейка = (TextBlock)cellContent;
                             var ученик = (Student)item;
-                            if (ученик != null && DateTime.Parse(ученик.датаСправки) < DateTime.Now)
+                            if (ученик != null && DateTime.Parse(ученик.ДатаОкончания) <= DateTime.Now)
                             {
                                 ячейка.Foreground = new SolidColorBrush(Colors.Red);
                             }
@@ -257,7 +263,7 @@ namespace prakt_project
                                 Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
                                 Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
                                 ДатаРождения = reader["ДатаРождения"].ToString(),
-                                датаСправки = (reader["ДатаСправки"] != DBNull.Value) ?
+                                ДатаОкончания = (reader["ДатаСправки"] != DBNull.Value) ?
                       (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
                       (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
                       (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString() :
@@ -306,10 +312,9 @@ namespace prakt_project
                                 лист.Cells[1 + i + 1, 2].Value = данные[i].Имя;
                                 лист.Cells[1 + i + 1, 3].Value = данные[i].Отчество;
                                 лист.Cells[1 + i + 1, 4].Value = данные[i].Класс;
-                                лист.Cells[1 + i + 1, 5].Value = данные[i].датаСправки;
+                                лист.Cells[1 + i + 1, 5].Value = данные[i].ДатаОкончания;
                             }
 
-                            // Сохраняем пакет
                             пакет.Save();
                         }
 
