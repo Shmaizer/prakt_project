@@ -74,6 +74,8 @@
         </DataGrid>
         <ComboBox SelectedIndex="0" Name="comboBoxClasses" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
         <Button Content="Отчет" HorizontalAlignment="Left" Margin="236,10,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click_1" />
+        <Button Content="Удалить" HorizontalAlignment="Left" Margin="1086,10,0,0" VerticalAlignment="Top" Width="96" Height="22" Click="Button_Click_Delete" />
+        <TextBox Name="textBoxSearch" HorizontalAlignment="Left" Height="22" Margin="337,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="textBoxSearch_TextChanged" />
     </Grid>
 
 

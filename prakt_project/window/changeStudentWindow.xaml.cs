@@ -13,12 +13,9 @@ namespace prakt_project.window
     /// </summary>
     public partial class changeStudentWindow : Window
     {
-
-
         private string connectionString = "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=schoolDB; Integrated Security=True";
 
         prakt_project.MainWindow.Student student = new prakt_project.MainWindow.Student();
-        
         public changeStudentWindow(prakt_project.MainWindow.Student selectedStudent)
         {
             InitializeComponent();
@@ -28,10 +25,7 @@ namespace prakt_project.window
             фамилияTextBox.TextChanged += TextBox_TextChanged;
             имяTextBox.TextChanged += TextBox_TextChanged;
             отчествоTextBox.TextChanged += TextBox_TextChanged;
-
         }
-
-
         private void selectAllClassToComboBox()
         {
             try
@@ -133,11 +127,7 @@ namespace prakt_project.window
             }
             ChildWindowClosed?.Invoke(this, EventArgs.Empty);
             this.Hide();
-
-
-
         }
-
         public event EventHandler ChildWindowClosed;
 
         private void Button_Click_Close(object sender, RoutedEventArgs e)
@@ -145,12 +135,10 @@ namespace prakt_project.window
             ChildWindowClosed?.Invoke(this, EventArgs.Empty);
             this.Hide();
         }
-
         private void фамилияTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             
         }
-
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             bool isValidInput = фамилияTextBox.Text.All(char.IsLetter) &&

@@ -8,7 +8,6 @@ namespace prakt_project
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // Проверка на некорректные данные (в данном случае, наличие символов, не являющихся буквами)
             if (value is string text)
             {
                 return !string.IsNullOrEmpty(text) && !text.All(char.IsLetter);

@@ -40,7 +40,7 @@ namespace prakt_project
             InitializeComponent();
             selectAllClassToComboBox();
             selectClassesToChangeComboBox();
-            
+            textBoxSearch.TextChanged += textBoxSearch_TextChanged;
         }
 
         private void ChildWindow_DataUpdated(object sender, EventArgs e)
@@ -119,10 +119,6 @@ namespace prakt_project
                 }
                 dataGridMain.ItemsSource = students;
                 colorCell();
-
-
-
-
             }
             catch (Exception ex)
             {
@@ -130,7 +126,6 @@ namespace prakt_project
             }
             
         }
-
         private void ChildWindowClosedHandler(object sender, EventArgs e)
         {
             selectClassesToChangeComboBox();
@@ -142,13 +137,10 @@ namespace prakt_project
             if (button != null && button.DataContext is Student)
             {
                 Student selectedStudent = button.DataContext as Student;
-                //MessageBox.Show(selectedStudent.ФИО);
                 window.changeStudentWindow childWindow = new window.changeStudentWindow(selectedStudent);
                 childWindow.ChildWindowClosed += ChildWindowClosedHandler;
                 childWindow.ShowDialog();
-                //new window.changeStudentWindow(selectedStudent).ShowDialog();
             }
-
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -158,10 +150,6 @@ namespace prakt_project
         }
         private void printDockToStudentButton(object sender, RoutedEventArgs e)
         {
-            //string[] mass = new string[] { "Good" };
-            //string[] mass2 = new string[] { "Good1" };
-            //T2CardGen nn = new T2CardGen();
-            //nn.genDock("E:\\еуые\\1.docx", "E:\\еуые\\1\\1.docx", mass, mass2);
             Button button = sender as Button;
             if (button != null && button.DataContext is Student)
             {
@@ -170,10 +158,6 @@ namespace prakt_project
                 childWindow.ChildWindowClosed += ChildWindowClosedHandler;
                 childWindow.ShowDialog();
             }
-
-
-
-
         }
         private void updateDocxSpravka_Window(object sender, RoutedEventArgs e)
         {
@@ -186,13 +170,10 @@ namespace prakt_project
                 childWindow.ShowDialog();
             }
         }
-
         private void dataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             
         }
-
-
         //Краски
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -263,17 +244,21 @@ namespace prakt_project
                                 Класс_ID = Convert.ToInt32(reader["Класс_ID"]),
                                 Ученик_ID = Convert.ToInt32(reader["Ученик_ID"]),
                                 ДатаРождения = reader["ДатаРождения"].ToString(),
-                                ДатаОкончания = (reader["ДатаСправки"] != DBNull.Value) ?
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Day).ToString() + "." +
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Month).ToString() + "." +
-                      (DateTime.Parse(reader["ДатаСправки"].ToString()).Year).ToString() :
+                                ДатаОкончания = (reader["ДатаОкончания"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаОкончания"].ToString()).Year).ToString() :
+                      "отсутствует",
+                                ДатаВыдачи = (reader["ДатаВыдачи"] != DBNull.Value) ?
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Day).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Month).ToString() + "." +
+                      (DateTime.Parse(reader["ДатаВыдачи"].ToString()).Year).ToString() :
                       "отсутствует"
                             });
                         }
                     }
                 }
                 СоздатьExcelОтчет(students);
-
             }
             catch (Exception ex)
             {
@@ -305,19 +290,19 @@ namespace prakt_project
                             лист.Cells[1, 2].Value = "Имя";
                             лист.Cells[1, 3].Value = "Отчество";
                             лист.Cells[1, 4].Value = "Класс";
-                            лист.Cells[1, 5].Value = "Справка до..";
+                            лист.Cells[1, 5].Value = "ДатаВыдачи";
+                            лист.Cells[1, 6].Value = "ДатаОкончания";
                             for (int i = 0; i < данные.Count; i++)
                             {
                                 лист.Cells[1 + i + 1, 1].Value = данные[i].Фамилия;
                                 лист.Cells[1 + i + 1, 2].Value = данные[i].Имя;
                                 лист.Cells[1 + i + 1, 3].Value = данные[i].Отчество;
                                 лист.Cells[1 + i + 1, 4].Value = данные[i].Класс;
-                                лист.Cells[1 + i + 1, 5].Value = данные[i].ДатаОкончания;
+                                лист.Cells[1 + i + 1, 5].Value = данные[i].ДатаВыдачи;
+                                лист.Cells[1 + i + 1, 6].Value = данные[i].ДатаОкончания;
                             }
-
                             пакет.Save();
                         }
-
                         Console.WriteLine($"Отчет успешно сохранен в {saveFileDialog.FileName}");
                     }
                 }
@@ -326,6 +311,54 @@ namespace prakt_project
             {
                 MessageBox.Show($"Ошибка при создании отчета: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Button_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Student selectedStudent = dataGridMain.SelectedItem as Student;
+                if (selectedStudent != null)
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        SqlTransaction transaction = connection.BeginTransaction();
+
+                        try
+                        {
+                            string deleteDocumentsQuery = $"DELETE FROM tbl_Docx WHERE Ученик_ID = {selectedStudent.Ученик_ID}";
+                            SqlCommand deleteDocumentsCommand = new SqlCommand(deleteDocumentsQuery, connection, transaction);
+                            deleteDocumentsCommand.ExecuteNonQuery();
+                            string deleteStudentQuery = $"DELETE FROM tbl_Student WHERE Ученик_ID = {selectedStudent.Ученик_ID}";
+                            SqlCommand deleteStudentCommand = new SqlCommand(deleteStudentQuery, connection, transaction);
+                            deleteStudentCommand.ExecuteNonQuery();
+                            transaction.Commit();
+                            selectClassesToChangeComboBox();
+                            MessageBox.Show("Запись удалена!");
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            MessageBox.Show($"Ошибка при удалении записи: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при удалении записи: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void textBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = textBoxSearch.Text.ToLower();
+            var filteredStudents = students.Where(student =>
+                student.ФИО.ToLower().Contains(searchText) || 
+                student.Класс.ToLower().Contains(searchText) 
+            ).ToList();
+            dataGridMain.ItemsSource = filteredStudents;
         }
     }
 }

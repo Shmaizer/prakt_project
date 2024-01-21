@@ -73,6 +73,8 @@ namespace prakt_project.window
                     student.Класс};
                 T2CardGen nn = new T2CardGen();
                 nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_Справка" +".docx", first, last) ;
+                System.Windows.Forms.MessageBox.Show("Справка была успешно создана!");
+
                 ChildWindowClosed?.Invoke(this, EventArgs.Empty);
                 Close();
             }
@@ -94,6 +96,7 @@ namespace prakt_project.window
                 T2CardGen nn = new T2CardGen();
                 nn.genDock(@"C:\Users\valer\source\repos\prakt_project\prakt_project\pattern_Docx\СПРАВКА_подтверждение.docx", textBoxPath.Text + @"\" + $"{student.Фамилия}_СПРАВКА_подтверждение" + ".docx", first, last);
                 ChildWindowClosed?.Invoke(this, EventArgs.Empty);
+                System.Windows.Forms.MessageBox.Show("Справка-подтверждениеа была успешно создана!");
                 Close();
             }
         }

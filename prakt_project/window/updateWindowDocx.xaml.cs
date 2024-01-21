@@ -31,8 +31,8 @@ namespace prakt_project.window
         {
             InitializeComponent();
             student = selectedStudent;
-            dataPickerDocxFirst.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаОкончания) : DateTime.Now;
-            dataPickerDockEnd.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаОкончания) : DateTime.Now;
+            dataPickerDocxFirst.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаВыдачи) : DateTime.Now;
+            dataPickerDockEnd.SelectedDate = (student.ДатаОкончания != "отсутствует") ? DateTime.Parse(student.ДатаОкончания) : DateTime.Parse($"{(int)DateTime.Now.Day+1}.{DateTime.Now.Month}.{DateTime.Now.Year}");
         }
         
 
@@ -61,7 +61,7 @@ namespace prakt_project.window
 
                         if (rowsInserted > 0)
                         {
-                            MessageBox.Show("Справка успешно создана", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Справка успешно обновлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                             ChildWindowClosed?.Invoke(this, EventArgs.Empty);
                             Close();
                         }
